@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+DOCKER_IMAGE=sypingauto/gta5view-build:1.10-shared
+PROJECT_DIR_DOCKER=/gta5view
+
+cd ${PROJECT_DIR} && \
+docker pull ${DOCKER_IMAGE} && \
+docker run --rm \
+   -v "${PROJECT_DIR}:${PROJECT_DIR_DOCKER}" \
+   ${DOCKER_IMAGE} \
+   /bin/bash -c "экспорт PROJECT_DIR=${PROJECT_DIR_DOCKER} && экспорт QT_SELECT=${QT_SELECT} && экспорт APPLICATION_VERSION=${APPLICATION_VERSION} && экспорт APPLICATION_COMMIT=${APPLICATION_COMMIT} && экспорт BUILD_TYPE=${BUILD_TYPE} && экспорт QMAKE_FLAGS_QT4=${QMAKE_FLAGS_QT4} && экспорт QMAKE_FLAGS_QT5=${QMAKE_FLAGS_QT5} && экспорт CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} && экспорт QMAKE_BUILD_TYPE=${QMAKE_BUILD_TYPE} && экспорт PACKAGE_VERSION=${PACKAGE_VERSION} && экспорт PACKAGE_BUILD=${PACKAGE_BUILD} && экспорт PACKAGE_CODE=${PACKAGE_CODE} && экспорт EXECUTABLE_VERSION=${EXECUTABLE_VERSION} && экспорт EXECUTABLE_ARCH=${EXECUTABLE_ARCH} && cd ${PROJECT_DIR_DOCKER} && .ci/wininstall_build.sh"

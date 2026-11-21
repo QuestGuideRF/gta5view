@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# Создание папок
+cd ${PROJECT_DIR} && \
+echo "Версия сборки gta5view: ${APPLICATION_VERSION}" && \
+mkdir -p build && \
+mkdir -p assets && \
+chmod -x res/gta5sync_*.qm res/*.desktop res/*gta5view*.png && \
+cd build && \
+mkdir -p qt5 && \
+cd qt5 && \
+echo "Grand Theft Auto V Программа просмотра и редактирования Snapmatic и сохраненных игр" > ./description-pak && \
+cd .. && \
+
+# Установить компилятор
+export CC=clang && \
+export CXX=clang++ && \
+
+# Подготовьте шаг проверки установки
+mkdir -p /usr/share/gta5view && \
+
+# Начинаем сборку
+cd qt5 && \
+cmake \
+   "-DCMAKE_INSTALL_PREFIX=/usr" \
+   "${CMAKE_BUILD_TYPE}" \
+   "-DFORCE_QT_VERSION=5" \
+   "-DGTA5VIEW_BUILDCODE=${PACKAGE_CODE}" \
+   "-DGTA5VIEW_APPVER=${APPLICATION_VERSION}" \
+   "-DGTA5VIEW_COMMIT=${APPLICATION_COMMIT}" \
+   "-DWITH_DONATE=ВКЛ." \
+   "-DWITH_TELEMETRY=ВКЛ." \
+   "-DDONATE_ADDRESSES=$(cat ${PROJECT_DIR}/.ci/donate.txt)" \
+   "-DTELEMETRY_WEBURL=https://dev.syping.de/gta5view-userstats/" \
+   "-DQCONF_BUILD=ВКЛ." \
+   ../../ && \
+make -j 4 && \
+checkinstall -D --default --nodoc --install=no --pkgname=gta5view --pkgversion=${PACKAGE_VERSION} --pkgrelease=${PACKAGE_BUILD} --pkggroup=utility --maintainer="Набрав \<dpkg@syping.de\>" --requires=libqt5core5a,libqt5gui5,libqt5network5,libqt5svg5,libqt5widgets5,qttranslations5-l10n --conflicts=gta5view-qt4,gta5view-qt5 --replaces=gta5view-qt4,gta5view-qt5 --pakdir=${PROJECT_DIR}/assets

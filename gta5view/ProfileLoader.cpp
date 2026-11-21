@@ -1,0 +1,103 @@
+#include "SnapmaticPicture.h"
+#include "ProfileLoader.h"
+#include "SavegameData.h"
+#include "CrewDatabase.h"
+#include "wrapper.h"
+#include <QStringBuilder>
+#include <QVector>
+#include <QString>
+#include <QFile>
+#ifdef Q_OS_WIN
+#include <QDir>
+#include <QList>
+#else
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "dirent.h"
+#endif
+ProfileLoader::ProfileLoader(QString profileFolder, CrewDatabase *crewDB, QObject *parent) : QThread(parent), profileFolder(profileFolder), crewDB(crewDB)
+{
+}
+void ProfileLoader::run()
+{
+    int curFile = 1;
+    int maximumV = 0;
+    QVector<int> crewList;
+    QVector<QString> savegameFiles;
+    QVector<QString> snapmaticPics;
+#ifdef Q_OS_WIN
+    QDir dir(profileFolder);
+    const QStringList files = dir.entryList(QDir::Files);
+    for (const QString &fileName : files) {
+        if (fileName.startsWith("SGTA5") && !fileName.endsWith(".bak")) {
+            savegameFiles << fileName;
+            maximumV++;
+        }
+        if (fileName.startsWith("PGTA5") && !fileName.endsWith(".bak")) {
+            snapmaticPics << fileName;
+            maximumV++;
+        }
+    }
+#else
+    DIR *dirp = opendir(profileFolder.toUtf8().constData());
+    struct dirent *dp;
+    while ((dp = readdir(dirp)) != 0) {
+        const QString fileName = QString::fromUtf8(dp->d_name);
+        const QString filePath = profileFolder % "/" % fileName;
+        struct stat fileStat;
+        stat(filePath.toUtf8().constData(), &fileStat);
+        if (S_ISREG(fileStat.st_mode) != 0) {
+            if (fileName.startsWith("SGTA5") && !fileName.endsWith(".bak")) {
+                savegameFiles << fileName;
+                maximumV++;
+            }
+            if (fileName.startsWith("PGTA5") && !fileName.endsWith(".bak")) {
+                snapmaticPics << fileName;
+                maximumV++;
+            }
+        }
+    }
+    closedir(dirp);
+#endif
+    emit directoryScanned(savegameFiles, snapmaticPics);
+    emit loadingProgress(curFile, maximumV);
+    for (const QString &SavegameFile : qAsConst(savegameFiles)) {
+        emit loadingProgress(curFile, maximumV);
+        const QString sgdPath = profileFolder % "/" % SavegameFile;
+        SavegameData *savegame = new SavegameData(sgdPath);
+        if (savegame->readingSavegame()) {
+            emit savegameLoaded(savegame, sgdPath);
+        }
+        curFile++;
+    }
+    for (const QString &SnapmaticPic : qAsConst(snapmaticPics)) {
+        emit loadingProgress(curFile, maximumV);
+        const QString picturePath = profileFolder % "/" % SnapmaticPic;
+        SnapmaticPicture *picture = new SnapmaticPicture(picturePath);
+        if (picture->readingPicture(true)) {
+            if (picture->isFormatSwitched()) {
+                picture->setSnapmaticFormat(SnapmaticFormat::PGTA_Format);
+                if (picture->exportPicture(picturePath, SnapmaticFormat::PGTA_Format)) {
+                    emit pictureFixed(picture);
+                }
+            }
+            emit pictureLoaded(picture);
+            int crewNumber = picture->getSnapmaticProperties().crewID;
+            if (!crewList.contains(crewNumber)) {
+                crewList += crewNumber;
+            }
+        }
+        curFile++;
+    }
+    crewDB->setAddingCrews(true);
+    for (int crewID : qAsConst(crewList)) {
+        crewDB->addCrew(crewID);
+    }
+    crewDB->setAddingCrews(false);
+}
+void ProfileLoader::preloaded()
+{
+}
+void ProfileLoader::loaded()
+{
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="desktop-application">
+    <id>de.syping.gta5view</id>
+    <launchable type="desktop-id">de.syping.gta5view.desktop</launchable>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0+</project_license>
+
+    <name>gta5view</name>
+
+    <summary>Открывайте и редактируйте профили GTA V.</summary>
+    <summary xml:lang="de">Открывайте и редактируйте профили GTA V.</summary>
+    <summary xml:lang="ko">Откройте и отредактируйте свой профиль GTA V.</summary>
+    <summary xml:lang="ru">Просмотрщик и редактор профилей GTA V</summary>
+    <summary xml:lang="zh-TW">打開與編輯 GTA V 個人檔案</summary>
+
+    <icon type="remote">https://img.syping.de/gta5view/gta5view.png</icon>
+
+    <description>
+        <p>Программа просмотра/редакторов Snapmatic и сохранений с открытым исходным кодом для GTA V</p>
+        <p>Features</p>
+        <ul>
+            <li>Просмотр Snapmatics с возможностью отключения их в игре</li>
+            <li>Редактируйте изображения и свойства Snapmatic несколькими способами.</li>
+            <li>Импорт/экспорт Snapmatic, сохраненных игр и изображений.</li>
+            <li>Выбирайте между несколькими учетными записями Social Club в качестве идентификаторов профилей GTA V.</li>
+        </ul>
+    </description>
+
+    <categories>
+        <category>Utility</category>
+    </categories>
+
+    <developer_name>Syping</developer_name>
+
+    <releases>
+        <release date="2023-03-15" version="1.10.2"/>
+        <release date="2021-06-17" version="1.10.1"/>
+        <release date="2021-05-27" version="1.10.0"/>
+        <release date="2021-03-22" version="1.9.2"/>
+        <release date="2020-12-16" version="1.9.1"/>
+        <release date="2020-11-30" version="1.9.0"/>
+        <release date="2020-10-11" version="1.8.0"/>
+    </releases>
+
+    <screenshots>
+        <screenshot type="default">
+            <caption>Пользовательский интерфейс</caption>
+            <image type="source">https://img.syping.de/gta5view/mainui_kde.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Snapmatic просмотрщик</caption>
+            <image type="source">https://img.syping.de/gta5view/picture_kde.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Импортер изображений</caption>
+            <image type="source">https://img.syping.de/gta5view/import_kde.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Редактор Snapmatic Player</caption>
+            <image type="source">https://img.syping.de/gta5view/players_kde.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Редактор свойств Snapmatic</caption>
+            <image type="source">https://img.syping.de/gta5view/prop_kde.png</image>
+        </screenshot>
+    </screenshots>
+
+    <content_rating type="oars-1.1" />
+
+    <url type="homepage">https://gta5view.syping.de/</url>
+</component>
